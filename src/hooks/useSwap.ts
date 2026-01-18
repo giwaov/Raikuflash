@@ -37,9 +37,12 @@ export function useSwap() {
   const statusPollRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch quote when input changes
-  const fetchQuote = useCallback(async () => {
-    const { inputToken, outputToken, inputAmount, slippageBps } = swapState;
-
+  const fetchQuote = useCallback(async (
+    inputToken: Token | null,
+    outputToken: Token | null,
+    inputAmount: string,
+    slippageBps: number
+  ) => {
     if (!inputToken || !outputToken || !inputAmount || parseFloat(inputAmount) <= 0) {
       setSwapState((prev) => ({ ...prev, quote: null, outputAmount: '' }));
       return;
@@ -78,7 +81,7 @@ export function useSwap() {
         isLoadingQuote: false,
       }));
     }
-  }, [swapState.inputToken, swapState.outputToken, swapState.inputAmount, swapState.slippageBps]);
+  }, []);
 
   // Debounced quote fetch
   useEffect(() => {
@@ -86,14 +89,21 @@ export function useSwap() {
       clearTimeout(quoteTimeoutRef.current);
     }
 
-    quoteTimeoutRef.current = setTimeout(fetchQuote, 500);
+    quoteTimeoutRef.current = setTimeout(() => {
+      fetchQuote(
+        swapState.inputToken,
+        swapState.outputToken,
+        swapState.inputAmount,
+        swapState.slippageBps
+      );
+    }, 500);
 
     return () => {
       if (quoteTimeoutRef.current) {
         clearTimeout(quoteTimeoutRef.current);
       }
     };
-  }, [fetchQuote]);
+  }, [swapState.inputToken, swapState.outputToken, swapState.inputAmount, swapState.slippageBps, fetchQuote]);
 
   // Poll for transaction status
   const pollTransactionStatus = useCallback(
