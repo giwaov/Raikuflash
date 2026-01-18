@@ -32,7 +32,8 @@ export class JupiterService {
   }
 
   /**
-   * Get a swap quote from Jupiter (via local API route to avoid CORS)
+   * Get a swap quote from Jupiter
+   * Tries direct API first (Jupiter has CORS enabled), falls back to proxy
    */
   async getQuote(params: QuoteParams): Promise<SwapQuote> {
     const searchParams = new URLSearchParams({
@@ -42,7 +43,27 @@ export class JupiterService {
       slippageBps: String(params.slippageBps || CONFIG.DEFAULT_SLIPPAGE_BPS),
     });
 
-    // Use local API route to proxy Jupiter requests (avoids CORS)
+    // Try direct Jupiter API first (they have CORS enabled)
+    try {
+      const directResponse = await fetch(
+        `${this.baseUrl}/quote?${searchParams}`,
+        {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+        }
+      );
+
+      if (directResponse.ok) {
+        return directResponse.json();
+      }
+    } catch {
+      // Direct call failed, try proxy
+      console.log('Direct Jupiter call failed, trying proxy...');
+    }
+
+    // Fall back to local API proxy
     const response = await fetch(`/api/quote?${searchParams}`, {
       method: 'GET',
       headers: {
