@@ -133,7 +133,7 @@ export function TokenSelector({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name or paste address"
-              className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#333333] rounded-lg text-sm focus:outline-none focus:border-[#FFD700] transition-colors"
+              className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#333333] rounded-lg text-sm focus:outline-none focus:border-[#BFFF00] transition-colors"
               autoFocus
             />
           </div>
@@ -142,7 +142,7 @@ export function TokenSelector({
           <div className="max-h-64 overflow-y-auto">
             {isSearching ? (
               <div className="flex items-center justify-center py-8">
-                <div className="w-5 h-5 border-2 border-[#FFD700] border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-[#BFFF00] border-t-transparent rounded-full animate-spin" />
               </div>
             ) : displayTokens.length > 0 ? (
               displayTokens.map((token) => (

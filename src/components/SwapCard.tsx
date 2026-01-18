@@ -67,7 +67,7 @@ export function SwapCard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold flex items-center gap-2">
-            <span className="text-[#FFD700]">⚡</span>
+            <span className="text-[#BFFF00]">⚡</span>
             Flash Swap
           </h2>
           <SlippageSettings slippageBps={slippageBps} onSlippageChange={setSlippage} />
@@ -98,7 +98,7 @@ export function SwapCard() {
         <div className="flex justify-center -my-2 relative z-10">
           <button
             onClick={switchTokens}
-            className="w-10 h-10 bg-[#1a1a1a] border border-[#333333] rounded-xl flex items-center justify-center hover:bg-[#252525] hover:border-[#FFD700] transition-all"
+            className="w-10 h-10 bg-[#1a1a1a] border border-[#333333] rounded-xl flex items-center justify-center hover:bg-[#252525] hover:border-[#BFFF00] transition-all"
           >
             <svg
               className="w-5 h-5"
@@ -121,7 +121,7 @@ export function SwapCard() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-400">You receive</span>
             {isLoadingQuote && (
-              <div className="w-4 h-4 border-2 border-[#FFD700] border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-[#BFFF00] border-t-transparent rounded-full animate-spin" />
             )}
           </div>
           <div className="flex items-center gap-3">
@@ -163,7 +163,7 @@ export function SwapCard() {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400">Route</span>
-              <span className="text-[#FFD700]">
+              <span className="text-[#BFFF00]">
                 {quote.routePlan?.length || 1} hop(s) via Raiku JIT
               </span>
             </div>
@@ -176,9 +176,9 @@ export function SwapCard() {
           disabled={connected && !canSwap}
           className={`w-full mt-4 py-4 rounded-xl font-bold text-lg transition-all ${
             !connected
-              ? 'bg-[#FFD700] text-black hover:bg-[#B8860B]'
+              ? 'bg-[#BFFF00] text-black hover:bg-[#9ACC00]'
               : canSwap
-              ? 'bg-[#FFD700] text-black hover:bg-[#B8860B] animate-flash-glow'
+              ? 'bg-[#BFFF00] text-black hover:bg-[#9ACC00] animate-flash-glow'
               : 'bg-[#333333] text-gray-500 cursor-not-allowed'
           }`}
         >
@@ -201,7 +201,7 @@ export function SwapCard() {
         {/* Raiku badge */}
         <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
           <span>Powered by</span>
-          <span className="text-[#FFD700] font-semibold">Raiku JIT</span>
+          <span className="text-[#BFFF00] font-semibold">Raiku JIT</span>
           <span>• Sub-50ms confirmations</span>
         </div>
       </div>

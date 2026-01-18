@@ -18,7 +18,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <span className="text-2xl animate-lightning">⚡</span>
           <span className="text-xl font-bold">
-            The <span className="text-[#FFD700]">Flash</span>
+            The <span className="text-[#BFFF00]">Flash</span>
           </span>
         </div>
 
@@ -29,7 +29,7 @@ export function Header() {
             <span>Raiku JIT Active</span>
           </div>
           <div className="px-2 py-1 bg-[#111111] rounded-lg">
-            <span className="text-[#FFD700]">&lt;50ms</span> confirmations
+            <span className="text-[#BFFF00]">&lt;50ms</span> confirmations
           </div>
         </div>
 
@@ -49,7 +49,7 @@ export function Header() {
         ) : (
           <button
             onClick={() => setVisible(true)}
-            className="px-4 py-2 bg-[#FFD700] text-black font-semibold rounded-lg hover:bg-[#B8860B] transition-colors"
+            className="px-4 py-2 bg-[#BFFF00] text-black font-semibold rounded-lg hover:bg-[#9ACC00] transition-colors"
           >
             Connect
           </button>

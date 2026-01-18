@@ -3,8 +3,8 @@
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --flash-yellow: #FFD700;
-  --flash-yellow-dark: #B8860B;
+  --raiku-green: #BFFF00;
+  --raiku-green-dark: #9ACC00;
   --flash-red: #DC2626;
   --flash-green: #22C55E;
   --card-bg: #111111;
@@ -32,8 +32,8 @@ body {
 }
 
 @keyframes flash-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+  0%, 100% { box-shadow: 0 0 20px rgba(191, 255, 0, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(191, 255, 0, 0.6); }
 }
 
 .animate-lightning {

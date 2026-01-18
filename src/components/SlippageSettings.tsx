@@ -93,7 +93,7 @@ export function SlippageSettings({
                 onClick={() => handlePresetClick(bps)}
                 className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isPresetSelected(bps)
-                    ? 'bg-[#FFD700] text-black'
+                    ? 'bg-[#BFFF00] text-black'
                     : 'bg-[#1a1a1a] hover:bg-[#252525]'
                 }`}
               >
@@ -112,7 +112,7 @@ export function SlippageSettings({
               step="0.1"
               min="0.01"
               max="50"
-              className="flex-1 px-3 py-2 bg-[#1a1a1a] border border-[#333333] rounded-lg text-sm focus:outline-none focus:border-[#FFD700] transition-colors"
+              className="flex-1 px-3 py-2 bg-[#1a1a1a] border border-[#333333] rounded-lg text-sm focus:outline-none focus:border-[#BFFF00] transition-colors"
             />
             <span className="text-sm text-gray-400">%</span>
           </div>

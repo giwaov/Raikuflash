@@ -27,7 +27,7 @@ export function TransactionStatus({
       case 'signing':
         return {
           icon: (
-            <div className="w-16 h-16 border-4 border-[#FFD700] border-t-transparent rounded-full animate-spin" />
+            <div className="w-16 h-16 border-4 border-[#BFFF00] border-t-transparent rounded-full animate-spin" />
           ),
           title: 'Waiting for signature',
           subtitle: 'Please approve the transaction in your wallet',
@@ -37,10 +37,10 @@ export function TransactionStatus({
         return {
           icon: (
             <div className="relative">
-              <div className="w-16 h-16 bg-[#FFD700]/20 rounded-full flex items-center justify-center animate-pulse">
+              <div className="w-16 h-16 bg-[#BFFF00]/20 rounded-full flex items-center justify-center animate-pulse">
                 <span className="text-3xl">⚡</span>
               </div>
-              <div className="absolute inset-0 border-4 border-[#FFD700] border-t-transparent rounded-full animate-spin" />
+              <div className="absolute inset-0 border-4 border-[#BFFF00] border-t-transparent rounded-full animate-spin" />
             </div>
           ),
           title: 'Routing via Raiku JIT',
@@ -51,7 +51,7 @@ export function TransactionStatus({
         return {
           icon: (
             <div className="relative">
-              <div className="w-16 h-16 bg-[#FFD700]/30 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-[#BFFF00]/30 rounded-full flex items-center justify-center">
                 <span className="text-3xl">⚡</span>
               </div>
               <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
@@ -196,7 +196,7 @@ export function TransactionStatus({
             href={`https://solscan.io/tx/${signature}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full py-3 text-center text-sm text-[#FFD700] hover:text-[#B8860B] transition-colors"
+            className="block w-full py-3 text-center text-sm text-[#BFFF00] hover:text-[#9ACC00] transition-colors"
           >
             View on Solscan →
           </a>
@@ -208,7 +208,7 @@ export function TransactionStatus({
             onClick={onClose}
             className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
               status === 'confirmed'
-                ? 'bg-[#FFD700] text-black hover:bg-[#B8860B]'
+                ? 'bg-[#BFFF00] text-black hover:bg-[#9ACC00]'
                 : 'bg-[#333333] hover:bg-[#444444]'
             }`}
           >
