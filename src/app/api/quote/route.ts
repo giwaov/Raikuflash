@@ -12,41 +12,58 @@ export async function GET(request: NextRequest) {
 
   if (!inputMint || !outputMint || !amount) {
     return NextResponse.json(
-      { error: 'Missing required parameters' },
+      { error: 'Missing required parameters: inputMint, outputMint, amount' },
       { status: 400 }
     );
   }
 
-  try {
-    const params = new URLSearchParams({
-      inputMint,
-      outputMint,
-      amount,
-      slippageBps,
-    });
+  // Validate amount is a valid number
+  if (isNaN(Number(amount)) || Number(amount) <= 0) {
+    return NextResponse.json(
+      { error: 'Invalid amount: must be a positive number' },
+      { status: 400 }
+    );
+  }
 
-    const response = await fetch(`${JUPITER_API_URL}/quote?${params}`, {
+  const jupiterUrl = `${JUPITER_API_URL}/quote?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amount}&slippageBps=${slippageBps}`;
+
+  try {
+    const response = await fetch(jupiterUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
+        'User-Agent': 'TheFlash/1.0',
       },
+      // Add cache control to avoid stale responses
+      cache: 'no-store',
     });
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Jupiter API error:', errorText);
+      console.error('Jupiter API error:', response.status, responseText);
       return NextResponse.json(
-        { error: `Jupiter API error: ${errorText}` },
+        { error: responseText || `Jupiter API returned status ${response.status}` },
         { status: response.status }
       );
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    // Parse and return the JSON
+    try {
+      const data = JSON.parse(responseText);
+      return NextResponse.json(data);
+    } catch {
+      console.error('Failed to parse Jupiter response:', responseText);
+      return NextResponse.json(
+        { error: 'Invalid JSON response from Jupiter' },
+        { status: 502 }
+      );
+    }
   } catch (error) {
-    console.error('Quote fetch error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Quote fetch error:', errorMessage);
     return NextResponse.json(
-      { error: 'Failed to fetch quote' },
+      { error: `Network error: ${errorMessage}` },
       { status: 500 }
     );
   }
