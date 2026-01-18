@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Jupiter v6 Quote API
-const JUPITER_API_URL = 'https://quote-api.jup.ag/v6';
+// Jupiter v6 Quote API - primary and backup endpoints
+const JUPITER_ENDPOINTS = [
+  'https://quote-api.jup.ag/v6',
+  'https://api.jup.ag/swap/v1',
+];
+
+export const runtime = 'edge'; // Use Edge runtime for better connectivity
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -26,46 +31,69 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const jupiterUrl = `${JUPITER_API_URL}/quote?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amount}&slippageBps=${slippageBps}`;
+  const errors: string[] = [];
 
-  try {
-    const response = await fetch(jupiterUrl, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'TheFlash/1.0',
-      },
-      // Add cache control to avoid stale responses
-      cache: 'no-store',
-    });
+  // Try each endpoint until one succeeds
+  for (const baseUrl of JUPITER_ENDPOINTS) {
+    const jupiterUrl = `${baseUrl}/quote?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amount}&slippageBps=${slippageBps}`;
 
-    const responseText = await response.text();
-
-    if (!response.ok) {
-      console.error('Jupiter API error:', response.status, responseText);
-      return NextResponse.json(
-        { error: responseText || `Jupiter API returned status ${response.status}` },
-        { status: response.status }
-      );
-    }
-
-    // Parse and return the JSON
     try {
-      const data = JSON.parse(responseText);
-      return NextResponse.json(data);
-    } catch {
-      console.error('Failed to parse Jupiter response:', responseText);
-      return NextResponse.json(
-        { error: 'Invalid JSON response from Jupiter' },
-        { status: 502 }
-      );
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
+      const response = await fetch(jupiterUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        errors.push(`${baseUrl}: ${response.status} - ${errorText}`);
+        continue; // Try next endpoint
+      }
+
+      const data = await response.json();
+
+      // Add CORS headers to response
+      return NextResponse.json(data, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      errors.push(`${baseUrl}: ${errorMessage}`);
+      continue; // Try next endpoint
     }
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Quote fetch error:', errorMessage);
-    return NextResponse.json(
-      { error: `Network error: ${errorMessage}` },
-      { status: 500 }
-    );
   }
+
+  // All endpoints failed
+  console.error('All Jupiter endpoints failed:', errors);
+  return NextResponse.json(
+    {
+      error: 'Unable to fetch quote from Jupiter',
+      details: errors,
+    },
+    { status: 502 }
+  );
+}
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }
