@@ -32,7 +32,7 @@ export class JupiterService {
   }
 
   /**
-   * Get a swap quote from Jupiter
+   * Get a swap quote from Jupiter (via local API route to avoid CORS)
    */
   async getQuote(params: QuoteParams): Promise<SwapQuote> {
     const searchParams = new URLSearchParams({
@@ -42,15 +42,8 @@ export class JupiterService {
       slippageBps: String(params.slippageBps || CONFIG.DEFAULT_SLIPPAGE_BPS),
     });
 
-    if (params.onlyDirectRoutes) {
-      searchParams.set('onlyDirectRoutes', 'true');
-    }
-
-    if (params.asLegacyTransaction) {
-      searchParams.set('asLegacyTransaction', 'true');
-    }
-
-    const response = await fetch(`${this.baseUrl}/quote?${searchParams}`, {
+    // Use local API route to proxy Jupiter requests (avoids CORS)
+    const response = await fetch(`/api/quote?${searchParams}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -58,8 +51,8 @@ export class JupiterService {
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Jupiter quote failed: ${error}`);
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(errorData.error || `Jupiter quote failed: ${response.status}`);
     }
 
     return response.json();
