@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Jupiter v6 Quote API
 const JUPITER_API_URL = 'https://quote-api.jup.ag/v6';
 
 export async function GET(request: NextRequest) {
